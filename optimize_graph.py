@@ -4,13 +4,16 @@ import tensorflow as tf
 import tensorflow.contrib.tensorrt as trt
 from tensorflow.python.framework import graph_io
 
-_input = <INPUT_TENSOR_NAME>
-_output = <OUTPUR_TENSOR_NAME>
-outputs = [_output]
+OUTPUT_NODE_PREFIX = 'output_node'
+NUMBER_OF_OUTPUTS = 1
 
+outputs = [OUTPUT_NODE_PREFIX + str(i) for i in range(NUMBER_OF_OUTPUTS)]
+
+frozen_graph_path = sys.argv[1]
+output_folder = sys.argv[2]
 
 def get_frozen_graph():
-  with tf.gfile.FastGFile(sys.argv[1], "rb") as f:
+  with tf.gfile.FastGFile(frozen_graph_path, "rb") as f:
     graph_def = tf.GraphDef()
     graph_def.ParseFromString(f.read())
   return graph_def
@@ -29,4 +32,4 @@ with tf.Session(graph=g) as sess:
 		tf.import_graph_def(
   		graph_def=trt_graph_def,
   		name='')
-	graph_io.write_graph(g, '.', 'trt_'+sys.argv[1], as_text=False)
+	graph_io.write_graph(g, output_folder 'trt_' + frozen_graph_path.split('/')[-1], as_text=False)

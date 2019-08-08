@@ -32,8 +32,9 @@ print('Output Tensor names: ', output_node_names)
 
 sess = K.get_session()
 try:
-    frozen_graph = graph_util.convert_variables_to_constants(sess, sess.graph.as_graph_def(), output_node_names)    
+    frozen_graph = tf.graph_util.convert_variables_to_constants(sess, sess.graph.as_graph_def(), output_node_names)    
     graph_io.write_graph(frozen_graph, OUTPUT_FOLDER, OUTPUT_GRAPH, as_text=False)
-    print(f'Frozen graph ready for inference/serving at {OUTPUT_FOLDER}/{OUTPUT_GRAPH}')
-except:
+    print('Frozen graph ready for inference/serving at {}/{}'.format(OUTPUT_FOLDER, OUTPUT_GRAPH))
+except Exception as e:
     print('Error Occured')
+    print(str(e))
